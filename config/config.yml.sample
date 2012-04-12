@@ -1,0 +1,11 @@
+files:
+  - /tmp/tasks
+  - /tmp/tasks2
+    
+tasks:
+  - name: touch
+    desc: touch tmpfile
+    task: touch /tmp/tasks
+  - name: touch2
+    desc: touch tmpfile 2
+    task: touch /tmp/tasks2
