@@ -10,7 +10,7 @@ require 'pp'
 configure do
   set :haml, {:format => :html5 }
   set :public_folder, File.dirname(__FILE__) + '/public'
-  enable :sessions
+# enable :sessions
 end
 
 
@@ -25,6 +25,12 @@ end
 
 get "/tasks" do  
   haml :tasks
+end
+
+post "/perform/:task" do
+  @cmdline = @@tasks["#{params[:task]}"]["task"]
+  @result = `#{@cmdline}`
+  haml :results
 end
 
 
@@ -47,10 +53,33 @@ __END__
 
 @@index
 %h1 Files and Tasks.
+%h2 Files
+%h2 Tasks
+-# %code= @@tasks
+%table
+  %tr
+    %th Perform
+    %th TaskName
+    %th Description
+  - @@tasks.each do |name, attr|
+    %tr
+      %td
+        %form{:method => 'post', :action => "perform/#{name}"}
+          %input.btn{:type => 'submit', :value => "Perform"} 
+      %td= attr["label"]
+      %td= attr["desc"]
 
 @@tasks
 %h1 Tasks.
-- @@tasks.each do |task|
-  %h2= task["name"]
-  %p=  task["desc"]
-  %code=  task["task"]
+%code= @@tasks
+
+@@results
+%h1 Done
+%a{:href => "/"} Return
+%p
+  %pre
+    %code=  @cmdline = @@tasks["#{params[:task]}"]["task"]
+%h2 Result here
+%p
+  %pre
+    %code= @result
