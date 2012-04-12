@@ -9,13 +9,17 @@ require 'pp'
 
 configure do
   set :haml, {:format => :html5 }
+  set :method_override, true
+  set :logging, true
   set :public_folder, File.dirname(__FILE__) + '/public'
-# enable :sessions
+#  enable :sessions
 end
 
 
 ## set appsettings (to config later)
 @@config = YAML::load_file("./config/config.yml")
+
+@@files = @@config["files"]
 @@tasks = @@config["tasks"]
 
 
@@ -27,8 +31,23 @@ get "/tasks" do
   haml :tasks
 end
 
+get "/files/:id" do  
+  @id = params[:id]
+  @filepath=@@files[params[:id]]["path"]
+  haml :fileedit
+end
+
+put "/files/:id" do
+  @id = params[:captures][0]
+  @text = params[:text]
+  File.open(@@files[@id]["path"],"w") do |f|
+    f.puts @text
+  end
+  redirect '/'
+end
+
 post "/perform/:task" do
-  @cmdline = @@tasks["#{params[:task]}"]["task"]
+  @cmdline = @@tasks[params[:task]]["task"]
   @result = `#{@cmdline}`
   haml :results
 end
@@ -53,7 +72,17 @@ __END__
 
 @@index
 %h1 Files and Tasks.
+%hr
 %h2 Files
+%p edit your files.
+- @@files.each do |id, file|
+  %article
+    %h3= file["path"]
+    %p Type => #{file["type"]}
+    %a{:href => "files/#{id}"} Edit this file.
+    %pre
+      %code= File.read(file["path"])
+%hr
 %h2 Tasks
 -# %code= @@tasks
 %table
@@ -64,13 +93,14 @@ __END__
   - @@tasks.each do |name, attr|
     %tr
       %td
-        %form{:method => 'post', :action => "perform/#{name}"}
+        %form{:method => 'POST', :action => "/perform/#{name}"}
           %input.btn{:type => 'submit', :value => "Perform"} 
       %td= attr["label"]
       %td= attr["desc"]
 
 @@tasks
 %h1 Tasks.
+%p Perform your tasks.
 %code= @@tasks
 
 @@results
@@ -83,3 +113,14 @@ __END__
 %p
   %pre
     %code= @result
+
+@@fileedit
+%h1 File.
+%p= @filepath
+%form{:method => 'POST', :action => "/files/#{@id}", :enctype => 'text/plane'}
+  %input{:type => 'hidden', :name => '_method', :value  => 'put'}
+  %textarea{:name => "text", :rows => 30, :cols => 75}= File.read(@filepath)
+  %input{:type => 'hidden', :name => 'path', :value  => @filepath}
+  %input.btn-primary.btn-large{:type => 'submit', :value => 'update'}
+%a{:href => "/"} Return
+    

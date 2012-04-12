@@ -1,7 +1,13 @@
 files:
-  - /tmp/tasks
-  - /tmp/tasks2
-    
+  id1:
+    path: /tmp/etcfile
+    type: yaml
+    valid: true
+  id2:
+    path: /tmp/etcfile2
+    type: planetext
+    valid: false
+
 tasks:
   touch:
     label: toucher
