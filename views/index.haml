@@ -1,0 +1,10 @@
+%h1 Niboshi FLAKS.
+%h3 - FiLe And tasKS. -
+%hr
+%h2 Choose flak.
+- @@flaks.each do |id, flak|
+  %article
+    %dl
+      %dt
+        %a{:href =>"/#{id}"}= id
+      %dd&= flak["desc"]
