@@ -1,0 +1,22 @@
+config_staging:
+  desc: Edit config.yml for staging.
+  files:
+    id1:
+      path: /opt/capistrano/myapp/config/config.yml.staging
+      type: yaml
+  tasks:
+    id1:
+      label: test task
+      desc: hogehoge STDOUT
+      task: "echo hogehoge"
+config_production:
+  desc: Edit config.yml for production.
+  files:
+    id1:
+      path: /opt/capistrano/myapp/config/config.yml.production
+      type: yaml
+  tasks:
+    id1:
+      label: test task
+      desc: hogehoge STDOUT
+      task: "echo hogehoge"
