@@ -9,7 +9,13 @@ It has two features.
 
 ## Preview Image
 
-![./docs/niboshi_flaks.png](./docs/niboshi_flaks.png)
+### Top
+
+![](./docs/niboshi_flaks.png)
+
+### Files and Tasks
+
+![](./docs/file_and_task.png)
 
 ## Setup
 
