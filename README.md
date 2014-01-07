@@ -78,4 +78,3 @@ bundle exec rackup
 ## LICENSE
 
 MIT
-
